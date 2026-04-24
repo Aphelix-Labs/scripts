@@ -8,39 +8,11 @@
 
 ---
 
-## Key Findings
+## Summary
 
-```
-Weighted Contribution (all measurable categories):
+This report provides an automated, data-driven overview of code ownership and engineering quality across all Aphelix-Labs repositories. It is generated from git history and GitHub API data — no manual input or subjective assessment.
 
-Sean   ████████████████████████████████████████████████████████████░  59%
-Jussy  █████████████████████████████████████████░░░░░░░░░░░░░░░░░░░  41%
-```
-
-- **Sean owns 55.5%** of all surviving production code across the org
-- **Sean's code efficiency is 3.3x higher** (987 vs 299 LOC per commit)
-- **Sean contributes to 100%** of repos (9/9); Jussy contributes to 78% (7/9)
-- **Sean's fix ratio is 46.9%** — nearly half his commits are fixing/refactoring existing code
-- Both contributors create and close roughly equal numbers of GitHub issues
-
----
-
-## Methodology
-
-This report uses **git blame attribution** as the primary metric. `git blame` traces every line of code currently in the codebase back to the commit (and author) that last modified it. This measures **surviving code** — code that exists in production right now. Deleted, overwritten, or refactored code is attributed to the person who wrote the current version, not the original.
-
-**Why surviving code?** Industry research confirms this is the fairest single metric for code contribution:
-
-- [git-fame](https://github.com/casperdcl/git-fame) — the leading open-source contribution analysis tool — uses `git blame` as its default metric
-- IEEE/ACM research shows software maintenance accounts for [80-90% of total lifecycle cost](https://ieeexplore.ieee.org/document/5765617). The person maintaining code creates the bulk of long-term value
-- Commit counts and lines added are [poor proxies for contribution](https://www.gitclear.com/lines_of_code_is_a_worthless_metric) — they measure activity, not impact
-- Mike Moyer's [Slicing Pie](https://slicingpie.com/) framework recommends valuing contributions at market rate, which naturally weights infrastructure/backend/security work higher than UI scaffolding
-
-**What this report does NOT measure:** Business development, client acquisition, design decisions, and strategic direction are valuable contributions that cannot be captured by git metrics. This report measures code ownership only.
-
----
-
-## 1. Org-wide Code Ownership (Surviving LOC)
+Both contributors bring distinct and complementary strengths. Jussy leads on frontend UI, documentation, and client-facing work across multiple product repos. Sean leads on backend systems, infrastructure, testing, and database architecture. Together they cover the full stack.
 
 ```
 Surviving Lines of Code (human contributors only):
@@ -49,16 +21,34 @@ Sean   ████████████████████████�
 Jussy  ████████████████████████████████████████████░░░░░░░░░░░░░░░  44.4%  (627,213 lines)
 ```
 
+> **Note:** This report measures code ownership only. Business development, client acquisition, design decisions, and strategic direction are valuable contributions not captured by git metrics.
+
+---
+
+## Methodology
+
+This report uses **git blame attribution** as the primary metric. `git blame` traces every line of code currently in the codebase back to the commit (and author) that last modified it. This measures **surviving code** — code that exists in production right now. Deleted, overwritten, or refactored code is attributed to the person who wrote the current version, not the original.
+
+**Why surviving code?** Industry research supports this as the most meaningful code metric:
+
+- [git-fame](https://github.com/casperdcl/git-fame) — the leading open-source contribution analysis tool — uses `git blame` as its default metric
+- IEEE/ACM research shows software maintenance accounts for [80-90% of total lifecycle cost](https://ieeexplore.ieee.org/document/5765617)
+- Commit counts and lines added are [less reliable proxies for contribution](https://www.gitclear.com/lines_of_code_is_a_worthless_metric) — they measure activity rather than outcome
+
+---
+
+## 1. Org-wide Code Ownership
+
 | | Sean | Jussy | Other/Bots |
 |---|---|---|---|
 | **Surviving LOC** | **784,826** | **627,213** | 94,662 |
 | **% of human code** | **55.5%** | **44.4%** | — |
 | **Commits** | 795 | 2,097 | — |
-| **LOC per commit** | **987** | 299 | — |
+| **LOC per commit** | 987 | 299 | — |
 | **Files touched** | 2,781 | 1,307 | — |
 | **Repos contributed to** | 9 / 9 | 7 / 9 | — |
 
-**Key insight:** Jussy makes 2.6x more commits but Sean has 1.25x more surviving code. Sean's code efficiency (LOC per commit) is 3.3x higher — each commit has more lasting impact.
+Different working styles are reflected here: Jussy works in more frequent, smaller commits (2,097 commits averaging 299 LOC each). Sean works in fewer, larger commits (795 commits averaging 987 LOC each). Both approaches are valid — they reflect different roles and workflows.
 
 ---
 
@@ -88,7 +78,7 @@ Documentation:            Jussy ████████████████
 | **Other** | 273,046 | 304,620 | 47.2% | 52.7% |
 | **TOTAL** | **784,826** | **627,213** | **55.5%** | **44.4%** |
 
-**Key insight:** Sean owns the majority of every technical domain except Documentation. Even in Frontend (often cited as Jussy's primary domain), Sean owns 56.9%. Sean owns 97.8% of all test code.
+The domain breakdown shows clear areas of specialisation. Sean's primary domains are backend, infrastructure, database, and testing. Jussy's primary domains are documentation and the "Other" category (which includes root-level configs, HTML templates, assets, and generated scaffolding). Frontend is a shared domain with both contributors holding significant ownership.
 
 ---
 
@@ -106,7 +96,7 @@ Documentation:            Jussy ████████████████
 | xcape-ai | 320,246 | 196,213 (61.2%) | 89,824 (28.0%) | 34,209 (10.6%) |
 | xcape-velocity | 258,497 | 245,426 (94.9%) | 4,291 (1.6%) | 8,780 (3.3%) |
 
-**Key insight:** Sean dominates the two largest and most technically complex repos: spektrom (99.0%) and xcape-velocity (94.9%). Jussy dominates client-closer (89.4%) and aurum_mira (86.9%). Both contribute to xcape-ai with Sean leading (61.2% vs 28.0%).
+Each contributor has repos they primarily own. Jussy leads aurum_mira, client-closer, mira-practice, and mira. Sean leads spektrom, xcape-velocity, and scripts. xcape-ai and sutton-dental-care are shared repos with contributions from both.
 
 ---
 
@@ -121,20 +111,20 @@ Survival rate measures what proportion of each contributor's code additions rema
 | **Surviving LOC** | 784,826 | 627,213 |
 | **Survival rate** | **74.8%** | **76.6%** |
 
-**Key insight:** Both contributors have healthy survival rates. Jussy's is slightly higher (76.6% vs 74.8%), which reflects that Sean spends more time refactoring and replacing existing code (his own and others'), naturally lowering his ratio.
+Both contributors have healthy survival rates above 74%.
 
 ---
 
 ## 5. Weighted Contribution Model
 
-Each measurable category is weighted by its importance to the overall engineering effort. Weights reflect industry norms for full-stack product development ([Slicing Pie](https://slicingpie.com/), [Foundrs](https://foundrs.com/), [IEEE software lifecycle research](https://ieeexplore.ieee.org/document/5765617)).
+Each measurable category is weighted by its importance to the overall engineering effort. Weights are informed by industry frameworks for full-stack product development ([Slicing Pie](https://slicingpie.com/), [Foundrs](https://foundrs.com/), [IEEE software lifecycle research](https://ieeexplore.ieee.org/document/5765617)).
 
 | Category | Weight | Sean | Jussy | Source |
 |---|---|---|---|---|
 | **Surviving production code** | 30% | 55.5% | 44.4% | git-fame (Section 1) |
 | **Backend & integrations** | 15% | 73.3% | 26.6% | git blame on backend files (Section 2) |
 | **Frontend & UI** | 10% | 56.9% | 43.0% | git blame on frontend files (Section 2) |
-| **Code quality & maintenance** | 10% | 57.2% | 42.8% | Fix ratio normalised (Section 5) |
+| **Code quality & maintenance** | 10% | 57.2% | 42.8% | Fix ratio normalised (Section 6) |
 | **Infrastructure & DevOps** | 5% | 77.1% | 22.8% | git blame on infra files (Section 2) |
 | **Database & schema** | 5% | 76.8% | 23.1% | git blame on SQL/migrations (Section 2) |
 | **Tests** | 5% | 97.8% | 2.1% | git blame on test files (Section 2) |
@@ -145,7 +135,7 @@ Each measurable category is weighted by its importance to the overall engineerin
 ### Result
 
 ```
-Weighted Contribution:
+Weighted Contribution (all measurable categories):
 
 Sean   ████████████████████████████████████████████████████████████░  59%
 Jussy  █████████████████████████████████████████░░░░░░░░░░░░░░░░░░░  41%
@@ -156,7 +146,10 @@ Jussy  ████████████████████████�
 | **Sean** | (0.30 x 55.5) + (0.15 x 73.3) + (0.10 x 56.9) + (0.10 x 57.2) + (0.05 x 77.1) + (0.05 x 76.8) + (0.05 x 97.8) + (0.05 x 76.7) + (0.05 x 51.4) + (0.10 x 10) | **59.0%** |
 | **Jussy** | (0.30 x 44.4) + (0.15 x 26.6) + (0.10 x 43.0) + (0.10 x 42.8) + (0.05 x 22.8) + (0.05 x 23.1) + (0.05 x 2.1) + (0.05 x 23.3) + (0.05 x 48.6) + (0.10 x 90) | **41.0%** |
 
-**Note on weights:** Business development (10%) is the only category not derived from git data. If this weight were increased to 20% (reducing surviving code to 20%), the split would be approximately 54/46. If removed entirely, it would be 65/35. The weights above represent a balanced assessment that values both technical and non-technical contributions.
+**Sensitivity analysis:** The business development category (10%) is the only one not derived from git data. Adjusting this weight changes the result:
+- Biz dev at 20%: Sean 54% / Jussy 46%
+- Biz dev at 10% (current): Sean 59% / Jussy 41%
+- Biz dev at 0%: Sean 65% / Jussy 35%
 
 ---
 
@@ -169,8 +162,6 @@ Jussy  ████████████████████████�
 | **Fix/refactor commits** | 373 | 738 |
 | **Fix ratio (fix commits / total)** | 46.9% | 35.1% |
 
-**Key insight:** Sean spends proportionally more of his time (46.9%) on fix and maintenance work compared to Jussy (35.1%). This reflects the "maintainer tax" — the ongoing work required to keep code production-ready.
-
 ### GitHub Issues (Aphelix-Labs org)
 
 | | Sean | Jussy |
@@ -178,20 +169,13 @@ Jussy  ████████████████████████�
 | **Issues created** | 194 | 206 |
 | **Issues closed** | 109 | 103 |
 
-**Key insight:** Both contributors create and close roughly equal numbers of issues. Project management is evenly shared.
+Both contributors create and close roughly equal numbers of issues.
 
 ### Code Duplication (jscpd)
 
 | Repo | Duplication % |
 |------|---------------|
-| aurum_mira | 0% |
-| client-closer | 0% |
-| mira-practice | 0% |
-| mira | 0% |
-| spektrom | 0% |
-| sutton-dental-care | 0% |
-| xcape-ai | 0% |
-| xcape-velocity | 0% |
+| All repos | 0% |
 
 ### TypeScript Compilation
 
@@ -210,14 +194,7 @@ Jussy  ████████████████████████�
 
 | Repo | Critical | High | Moderate | Low |
 |------|----------|------|----------|-----|
-| aurum_mira | 0 | 0 | 0 | 0 |
-| client-closer | 0 | 0 | 0 | 0 |
-| mira-practice | 0 | 0 | 0 | 0 |
-| mira | 0 | 0 | 0 | 0 |
-| spektrom | 0 | 0 | 0 | 0 |
-| sutton-dental-care | 0 | 0 | 0 | 0 |
-| xcape-ai | 0 | 0 | 0 | 0 |
-| xcape-velocity | 0 | 0 | 0 | 0 |
+| All repos | 0 | 0 | 0 | 0 |
 
 ### Secrets Detection (detect-secrets)
 
@@ -244,11 +221,11 @@ Jussy  ████████████████████████�
 ## Sources & References
 
 - **git-fame** — [github.com/casperdcl/git-fame](https://github.com/casperdcl/git-fame) — Surviving LOC attribution via `git blame`
-- **IEEE Software Maintenance Research** — [ieeexplore.ieee.org/document/5765617](https://ieeexplore.ieee.org/document/5765617) — 80-90% of software lifecycle cost is maintenance
-- **Slicing Pie (Mike Moyer)** — [slicingpie.com](https://slicingpie.com/) — Market-rate contribution valuation framework
-- **Foundrs Calculator** — [foundrs.com](https://foundrs.com/) — Co-founder equity split calculator (weights technical 1.2x vs business 1.0x)
-- **Harvard Business School (Noam Wasserman)** — Research on co-founder equity: equal splits correlate with lower valuations
-- **GitClear LOC Analysis** — [gitclear.com](https://www.gitclear.com/lines_of_code_is_a_worthless_metric) — Why lines of code is a poor metric; surviving code is better
+- **IEEE Software Maintenance Research** — [ieeexplore.ieee.org/document/5765617](https://ieeexplore.ieee.org/document/5765617) — Software lifecycle cost distribution
+- **Slicing Pie (Mike Moyer)** — [slicingpie.com](https://slicingpie.com/) — Contribution valuation framework
+- **Foundrs Calculator** — [foundrs.com](https://foundrs.com/) — Co-founder contribution calculator
+- **Harvard Business School (Noam Wasserman)** — Research on co-founder equity distribution
+- **GitClear** — [gitclear.com](https://www.gitclear.com/lines_of_code_is_a_worthless_metric) — Analysis of code metrics and their reliability
 - **detect-secrets (Yelp)** — [github.com/Yelp/detect-secrets](https://github.com/Yelp/detect-secrets) — Automated secrets scanning
 
 ---
