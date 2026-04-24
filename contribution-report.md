@@ -19,12 +19,12 @@ This is the industry-standard metric used by [git-fame](https://github.com/caspe
 
 | | Sean | Jussy | Other/Bots |
 |---|---|---|---|
-| **Surviving LOC** | **784056** | **627213** | 94658 |
+| **Surviving LOC** | **784826** | **627213** | 94662 |
 | **% of human code** | **55.5%** | **44.4%** | — |
-| **Commits** | 794 | 2097 | — |
+| **Commits** | 795 | 2097 | — |
 | **LOC per commit** | **987** | 299 | — |
-| **Files touched** | 2777 | 1307 | — |
-| **Repos contributed to** | 8 / 9 | 7 / 9 | — |
+| **Files touched** | 2781 | 1307 | — |
+| **Repos contributed to** | 9 / 9 | 7 / 9 | — |
 
 ---
 
@@ -34,15 +34,15 @@ Surviving lines attributed by file category across all repos.
 
 | Domain | Sean LOC | Jussy LOC | Sean % | Jussy % |
 |---|---|---|---|---|
-| **Infrastructure** | 2591 | 784 | 76.7% | 23.2% |
+| **Infrastructure** | 2650 | 784 | 77.1% | 22.8% |
 | **Backend** | 83204 | 30276 | 73.3% | 26.6% |
 | **Frontend** | 245579 | 185715 | 56.9% | 43.0% |
 | **Tests** | 34910 | 785 | 97.8% | 2.1% |
-| **Documentation** | 67987 | 78596 | 46.3% | 53.6% |
+| **Documentation** | 68086 | 78596 | 46.4% | 53.5% |
 | **Database** | 44644 | 13412 | 76.8% | 23.1% |
 | **Data Config** | 32707 | 13025 | 71.5% | 28.4% |
-| **Other** | 272434 | 304620 | 47.2% | 52.7% |
-| **TOTAL** | **784056** | **627213** | **55.5%** | **44.4%** |
+| **Other** | 273046 | 304620 | 47.2% | 52.7% |
+| **TOTAL** | **784826** | **627213** | **55.5%** | **44.4%** |
 
 ---
 
@@ -54,6 +54,7 @@ Surviving lines attributed by file category across all repos.
 | client-closer | 339395 | 16982 (5.0%) | 303453 (89.4%) | 18960 (5.5%) |
 | mira-practice | 46202 | 8328 (18.0%) | 36641 (79.3%) | 1233 (2.6%) |
 | mira | 64390 | 10445 (16.2%) | 49657 (77.1%) | 4288 (6.6%) |
+| scripts | 774 | 770 (99.4%) | 0 (0.0%) | 4 (0.5%) |
 | spektrom | 289171 | 286528 (99.0%) | 0 (0.0%) | 2643 (0.9%) |
 | sutton-dental-care | 45810 | 5643 (12.3%) | 19723 (43.0%) | 20444 (44.6%) |
 | xcape-ai | 320246 | 196213 (61.2%) | 89824 (28.0%) | 34209 (10.6%) |
@@ -61,25 +62,92 @@ Surviving lines attributed by file category across all repos.
 
 ---
 
-## 4. Engineering Quality
+## 4. Code Durability (Survival Rate)
+
+Survival rate = surviving LOC / total lines added. Higher = more of your code stays in production.
+
+| | Sean | Jussy |
+|---|---|---|
+| **Lines added (all time)** | 1049056 | 818479 |
+| **Lines deleted (all time)** | 255926 | 135581 |
+| **Surviving LOC** | 784826 | 627213 |
+| **Survival rate** | **74.8%** | **76.6%** |
+
+---
+
+## 5. Engineering Quality
 
 ### Fix & Maintenance Commits
 
 | | Sean | Jussy |
 |---|---|---|
-| **Fix/refactor commits** | 372 | 738 |
-| **Fix ratio (fix commits / total)** | 46.8% | 35.1% |
+| **Fix/refactor commits** | 373 | 738 |
+| **Fix ratio (fix commits / total)** | 46.9% | 35.1% |
 
-### GitHub Issues Closed (Aphelix-Labs org)
+### GitHub Issues (Aphelix-Labs org)
 
 | | Sean | Jussy |
 |---|---|---|
-| **Issues closed** | 0 | 0 |
+| **Issues created** | 194 | 206 |
+| **Issues closed** | 109 | 103 |
+
+### Code Duplication (jscpd)
+
+| Repo | Duplication % |
+|------|---------------|
+| aurum_mira | 0% |
+| client-closer | 0% |
+| mira-practice | 0% |
+| mira | 0% |
+| spektrom | 0% |
+| sutton-dental-care | 0% |
+| xcape-ai | 0% |
+| xcape-velocity | 0% |
+
+### TypeScript Compilation
+
+| Repo | Errors |
+|------|--------|
+| aurum_mira | 0 |
+| client-closer | 0 |
+| mira-practice | 0 |
+| mira | 0 |
+| spektrom | 2 |
+| sutton-dental-care | 0 |
+| xcape-ai | 0 |
+| xcape-velocity | 0 |
+
+### Dependency Vulnerabilities
+
+| Repo | Critical | High | Moderate | Low |
+|------|----------|------|----------|-----|
+| aurum_mira | 0 | 0 | 0 | 0 |
+| client-closer | 0 | 0 | 0 | 0 |
+| mira-practice | 0 | 0 | 0 | 0 |
+| mira | 0 | 0 | 0 | 0 |
+| spektrom | 0 | 0 | 0 | 0 |
+| sutton-dental-care | 0 | 0 | 0 | 0 |
+| xcape-ai | 0 | 0 | 0 | 0 |
+| xcape-velocity | 0 | 0 | 0 | 0 |
+
+### Secrets Detection (detect-secrets)
+
+| Repo | Findings | Files |
+|------|----------|-------|
+| aurum_mira | 0 | 0 |
+| client-closer | 0 | 0 |
+| mira-practice | 0 | 0 |
+| mira | 0 | 0 |
+| scripts | 0 | 0 |
+| spektrom | 0 | 0 |
+| sutton-dental-care | 0 | 0 |
+| xcape-ai | 0 | 0 |
+| xcape-velocity | 0 | 0 |
 
 
 ---
 
-## 5. Domain Category Definitions
+## 6. Domain Category Definitions
 
 | Domain | File patterns | What it covers |
 |---|---|---|

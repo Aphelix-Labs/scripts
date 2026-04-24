@@ -313,9 +313,13 @@ done
 echo ""
 
 # ─── 9. Git Commit Analysis ─────────────────────────────────────────────────
-echo "[9/10] Git commit analysis (counts + fix ratios)..."
+echo "[9/10] Git commit analysis (counts, fix ratios, lines added)..."
 SEAN_FIXES=0
 JUSSY_FIXES=0
+SEAN_ADDED=0
+JUSSY_ADDED=0
+SEAN_DELETED=0
+JUSSY_DELETED=0
 for repo in $REPOS; do
   dir="$BASE_DIR/$repo"
   if [ -d "$dir/.git" ]; then
@@ -324,26 +328,43 @@ for repo in $REPOS; do
     jussy_fix=$(git -C "$dir" log --all --oneline --author="coffeebubbles\|CoffeeBubbles\|Justine" --grep="fix\|refactor\|correct\|rewrite" -i 2>/dev/null | wc -l || echo 0)
     SEAN_FIXES=$((SEAN_FIXES + sean_fix))
     JUSSY_FIXES=$((JUSSY_FIXES + jussy_fix))
+
+    # Lines added/deleted per author (for durability calc)
+    sean_stats=$(git -C "$dir" log --all --no-merges --author="Sean\|SeanRossHarvey" --pretty=tformat: --numstat 2>/dev/null | awk '{ a+=$1; d+=$2 } END { printf "%d %d", a+0, d+0 }')
+    jussy_stats=$(git -C "$dir" log --all --no-merges --author="coffeebubbles\|CoffeeBubbles\|Justine" --pretty=tformat: --numstat 2>/dev/null | awk '{ a+=$1; d+=$2 } END { printf "%d %d", a+0, d+0 }')
+    SEAN_ADDED=$((SEAN_ADDED + $(echo "$sean_stats" | awk '{print $1}')))
+    SEAN_DELETED=$((SEAN_DELETED + $(echo "$sean_stats" | awk '{print $2}')))
+    JUSSY_ADDED=$((JUSSY_ADDED + $(echo "$jussy_stats" | awk '{print $1}')))
+    JUSSY_DELETED=$((JUSSY_DELETED + $(echo "$jussy_stats" | awk '{print $2}')))
   fi
 done
 echo "  Sean fix/refactor commits: $SEAN_FIXES"
 echo "  Jussy fix/refactor commits: $JUSSY_FIXES"
+echo "  Sean lines added: $SEAN_ADDED, deleted: $SEAN_DELETED"
+echo "  Jussy lines added: $JUSSY_ADDED, deleted: $JUSSY_DELETED"
 echo ""
 
 # ─── 10. GitHub Issues ──────────────────────────────────────────────────────
-echo "[10/10] GitHub Issues (closed, by author)..."
-SEAN_ISSUES=0
-JUSSY_ISSUES=0
+echo "[10/10] GitHub Issues (created + closed, by author)..."
+SEAN_ISSUES_CREATED=0
+JUSSY_ISSUES_CREATED=0
+SEAN_ISSUES_CLOSED=0
+JUSSY_ISSUES_CLOSED=0
 for repo in $REPOS; do
-  tmpf="$CACHE_DIR/${repo}-issues.json"
-  gh issue list --repo "$GITHUB_ORG/$repo" --state closed --limit 500 --json number,author > "$tmpf" 2>/dev/null || echo "[]" > "$tmpf"
-  sean_count=$(node -e "try{const d=JSON.parse(require('fs').readFileSync('$tmpf','utf8'));console.log(d.filter(i=>i.author&&i.author.login==='SeanRossHarvey').length)}catch{console.log(0)}" 2>/dev/null || echo 0)
-  jussy_count=$(node -e "try{const d=JSON.parse(require('fs').readFileSync('$tmpf','utf8'));console.log(d.filter(i=>i.author&&i.author.login==='coffeebubbles').length)}catch{console.log(0)}" 2>/dev/null || echo 0)
-  SEAN_ISSUES=$((SEAN_ISSUES + sean_count))
-  JUSSY_ISSUES=$((JUSSY_ISSUES + jussy_count))
+  # Issues created by each author
+  sean_created=$(gh issue list --repo "$GITHUB_ORG/$repo" --state all --author SeanRossHarvey --limit 500 --json number --jq 'length' 2>/dev/null || echo 0)
+  jussy_created=$(gh issue list --repo "$GITHUB_ORG/$repo" --state all --author coffeebubbles --limit 500 --json number --jq 'length' 2>/dev/null || echo 0)
+  SEAN_ISSUES_CREATED=$((SEAN_ISSUES_CREATED + sean_created))
+  JUSSY_ISSUES_CREATED=$((JUSSY_ISSUES_CREATED + jussy_created))
+
+  # Issues closed by each author
+  sean_closed=$(gh issue list --repo "$GITHUB_ORG/$repo" --state closed --author SeanRossHarvey --limit 500 --json number --jq 'length' 2>/dev/null || echo 0)
+  jussy_closed=$(gh issue list --repo "$GITHUB_ORG/$repo" --state closed --author coffeebubbles --limit 500 --json number --jq 'length' 2>/dev/null || echo 0)
+  SEAN_ISSUES_CLOSED=$((SEAN_ISSUES_CLOSED + sean_closed))
+  JUSSY_ISSUES_CLOSED=$((JUSSY_ISSUES_CLOSED + jussy_closed))
 done
-echo "  Sean issues closed: $SEAN_ISSUES"
-echo "  Jussy issues closed: $JUSSY_ISSUES"
+echo "  Sean issues: created=$SEAN_ISSUES_CREATED closed=$SEAN_ISSUES_CLOSED"
+echo "  Jussy issues: created=$JUSSY_ISSUES_CREATED closed=$JUSSY_ISSUES_CLOSED"
 echo ""
 
 # ─── Generate Report ────────────────────────────────────────────────────────
@@ -358,6 +379,20 @@ if [ "$HUMAN_LOC" -gt 0 ]; then
 else
   SEAN_PCT_FMT="0.0"
   JUSSY_PCT_FMT="0.0"
+fi
+
+# Survival rate (surviving LOC / lines added)
+if [ "$SEAN_ADDED" -gt 0 ]; then
+  SEAN_SURV=$((TOTAL_SEAN * 1000 / SEAN_ADDED))
+  SEAN_SURV_FMT="$((SEAN_SURV / 10)).$((SEAN_SURV % 10))"
+else
+  SEAN_SURV_FMT="0.0"
+fi
+if [ "$JUSSY_ADDED" -gt 0 ]; then
+  JUSSY_SURV=$((TOTAL_JUSSY * 1000 / JUSSY_ADDED))
+  JUSSY_SURV_FMT="$((JUSSY_SURV / 10)).$((JUSSY_SURV % 10))"
+else
+  JUSSY_SURV_FMT="0.0"
 fi
 
 if [ "$COMMITS_SEAN" -gt 0 ]; then
@@ -522,7 +557,20 @@ cat >> "$REPORT_FILE" << REPORT_EOF3
 
 ---
 
-## 4. Engineering Quality
+## 4. Code Durability (Survival Rate)
+
+Survival rate = surviving LOC / total lines added. Higher = more of your code stays in production.
+
+| | Sean | Jussy |
+|---|---|---|
+| **Lines added (all time)** | $SEAN_ADDED | $JUSSY_ADDED |
+| **Lines deleted (all time)** | $SEAN_DELETED | $JUSSY_DELETED |
+| **Surviving LOC** | $TOTAL_SEAN | $TOTAL_JUSSY |
+| **Survival rate** | **${SEAN_SURV_FMT}%** | **${JUSSY_SURV_FMT}%** |
+
+---
+
+## 5. Engineering Quality
 
 ### Fix & Maintenance Commits
 
@@ -531,11 +579,12 @@ cat >> "$REPORT_FILE" << REPORT_EOF3
 | **Fix/refactor commits** | $SEAN_FIXES | $JUSSY_FIXES |
 | **Fix ratio (fix commits / total)** | ${SEAN_FIX_FMT}% | ${JUSSY_FIX_FMT}% |
 
-### GitHub Issues Closed (Aphelix-Labs org)
+### GitHub Issues (Aphelix-Labs org)
 
 | | Sean | Jussy |
 |---|---|---|
-| **Issues closed** | $SEAN_ISSUES | $JUSSY_ISSUES |
+| **Issues created** | $SEAN_ISSUES_CREATED | $JUSSY_ISSUES_CREATED |
+| **Issues closed** | $SEAN_ISSUES_CLOSED | $JUSSY_ISSUES_CLOSED |
 
 REPORT_EOF3
 
@@ -580,11 +629,32 @@ if [ "$SKIP_QUALITY" = false ]; then
   echo "" >> "$REPORT_FILE"
 fi
 
+# Secrets scan results
+echo "### Secrets Detection (detect-secrets)" >> "$REPORT_FILE"
+echo "" >> "$REPORT_FILE"
+echo "| Repo | Findings | Files |" >> "$REPORT_FILE"
+echo "|------|----------|-------|" >> "$REPORT_FILE"
+for repo in $REPOS; do
+  if [ -f "$CACHE_DIR/${repo}-secrets.json" ]; then
+    result=$(node -e "
+      try {
+        const d=JSON.parse(require('fs').readFileSync('$CACHE_DIR/${repo}-secrets.json','utf8'));
+        const r=d.results||{};const files=Object.keys(r);
+        let total=0;files.forEach(f=>{total+=r[f].length});
+        console.log(total+'|'+files.length);
+      } catch{console.log('0|0')}
+    " 2>/dev/null || echo "0|0")
+    IFS='|' read -r findings fcount <<< "$result"
+    echo "| $repo | $findings | $fcount |" >> "$REPORT_FILE"
+  fi
+done
+echo "" >> "$REPORT_FILE"
+
 cat >> "$REPORT_FILE" << REPORT_EOF4
 
 ---
 
-## 5. Domain Category Definitions
+## 6. Domain Category Definitions
 
 | Domain | File patterns | What it covers |
 |---|---|---|
